@@ -26,15 +26,14 @@ class Rock extends Thing implements Displayable{
 }
 
 public class LivingRock extends Rock implements Moveable {
+  // t is pseudo time
   LivingRock(float x, float y) {
     super(x,y);
   }
   void move() {
-    int t = 0; // t is pseudo time
-    while (y < 800){
-      if ((y + 9.8 * t * t) > 800) y = 800;
-      else y += 9.8 * t * t;
-      t++;
+    if (y < 800){
+      if ((y + 9.8) > 800) y = 800;
+      else y += 9.8;
     }
     x += random(-2,2);
   }
