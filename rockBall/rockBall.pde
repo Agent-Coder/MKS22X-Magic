@@ -30,7 +30,13 @@ public class LivingRock extends Rock implements Moveable {
     super(x,y);
   }
   void move() {
-    /* ONE PERSON WRITE THIS */
+    int t = 0; // t is pseudo time
+    while (y < 800){
+      if ((y + 9.8 * t * t) > 800) y = 800;
+      else y += 9.8 * t * t;
+      t++;
+    }
+    x += random(-2,2);
   }
 }
 
