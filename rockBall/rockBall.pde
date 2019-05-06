@@ -42,7 +42,7 @@ public class LivingRock extends Rock implements Moveable {
 }
 
 class Ball extends Thing implements Moveable {
-  float radius = random(50);
+  float radius = random(25) + 25;
   Ball(float x, float y) {
 
     super(x, y);
@@ -50,7 +50,7 @@ class Ball extends Thing implements Moveable {
 
   void display() {
     /* ONE PERSON WRITE THIS */
-    fill(random(255), random(255), random(255));
+    fill(255,0,0);
     ellipse(x,y,radius,radius);
   }
 
