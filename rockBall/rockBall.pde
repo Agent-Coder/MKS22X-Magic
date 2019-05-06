@@ -43,6 +43,8 @@ public class LivingRock extends Rock implements Moveable {
 
 class Ball extends Thing implements Moveable {
   float radius = random(25) + 25;
+  float xspeed=5;
+  float yspeed=5;
   Ball(float x, float y) {
 
     super(x, y);
@@ -55,7 +57,14 @@ class Ball extends Thing implements Moveable {
   }
 
   void move() {
-    /* ONE PERSON WRITE THIS */
+    x+=xspeed;
+    y+=yspeed;
+    if (x>=1000-radius||x<=radius) {
+      xspeed=-xspeed;
+    }
+    if (y>=800-radius||y<=radius ) {
+      yspeed=-yspeed;
+    }
   }
 }
 ArrayList<Displayable> thingsToDisplay;
