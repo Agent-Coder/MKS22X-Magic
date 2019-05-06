@@ -20,6 +20,10 @@ class Rock extends Thing{
 
   void display() { 
       /* ONE PERSON WRITE THIS */
+      //PImage rockimg = loadImage("rock.png");
+      //image(rockimg, 0,0);
+      fill(106,93,108);
+      ellipse(x,y,50,40);
   }
 }
 
@@ -54,6 +58,7 @@ ArrayList<Moveable> thingsToMove;
 
 void setup() {
   size(1000, 800);
+  //PImage rockimg = loadImage("rock.png");
 
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
