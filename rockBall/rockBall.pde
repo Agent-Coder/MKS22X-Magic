@@ -4,7 +4,7 @@ interface Displayable {
 interface Moveable {
   void move();
 }
-class Thing {
+abstract class Thing implements Displayable{
   float x, y;
 
   Thing(float x, float y) {
@@ -13,15 +13,13 @@ class Thing {
   }
 }
 
-class Rock extends Thing implements Displayable{
+class Rock extends Thing{
   Rock(float x, float y) {
     super(x, y);
   }
 
-  void display() {  
+  void display() { 
       /* ONE PERSON WRITE THIS */
-      fill(113,82,95);
-      ellipse(x,y,50.0,35.5);
   }
 }
 
@@ -39,7 +37,8 @@ public class LivingRock extends Rock implements Moveable {
   }
 }
 
-class Ball extends Thing implements Displayable, Moveable {
+class Ball extends Thing implements Moveable {
+  float radius = random(50);
   Ball(float x, float y) {
 
     super(x, y);
@@ -47,6 +46,8 @@ class Ball extends Thing implements Displayable, Moveable {
 
   void display() {
     /* ONE PERSON WRITE THIS */
+    fill(random(255), random(255), random(255));
+    ellipse(x,y,radius,radius);
   }
 
   void move() {
