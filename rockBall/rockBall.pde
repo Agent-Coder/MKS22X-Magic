@@ -19,13 +19,8 @@ abstract class Thing implements Displayable {
   }
 }
 
-<<<<<<< HEAD
 class Rock extends Thing{
   PImage rockimg;
-  
-=======
-class Rock extends Thing {
->>>>>>> 07c04367bf9b7c04609b8a71f42199084abd5782
   Rock(float x, float y) {
     super(x, y);
     int num = (int)random(1);
@@ -43,11 +38,6 @@ class Rock extends Thing {
   }
 
   void display() { 
-<<<<<<< HEAD
-      /* ONE PERSON WRITE THIS */
-      rockimg.resize(50,50);
-      image(rockimg, x,y);
-=======
     /* ONE PERSON WRITE THIS */
     PImage rockimg = loadImage("rock.png");
     //image(rockimg, 0,0);
@@ -55,7 +45,6 @@ class Rock extends Thing {
     image(rockimg, x, y);
     //fill(106,93,108);
     //ellipse(x,y,50,40);
->>>>>>> 07c04367bf9b7c04609b8a71f42199084abd5782
   }
 }
 
