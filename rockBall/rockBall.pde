@@ -1,10 +1,11 @@
 interface Displayable {
   void display();
 }
+
 interface Moveable {
   void move();
 }
-abstract class Thing implements Displayable{
+abstract class Thing implements Displayable {
   float x, y;
 
   Thing(float x, float y) {
@@ -13,9 +14,13 @@ abstract class Thing implements Displayable{
   }
 }
 
+<<<<<<< HEAD
 class Rock extends Thing{
   PImage rockimg;
   
+=======
+class Rock extends Thing {
+>>>>>>> 07c04367bf9b7c04609b8a71f42199084abd5782
   Rock(float x, float y) {
     super(x, y);
     int num = (int)random(1);
@@ -33,40 +38,57 @@ class Rock extends Thing{
   }
 
   void display() { 
+<<<<<<< HEAD
       /* ONE PERSON WRITE THIS */
       rockimg.resize(50,50);
       image(rockimg, x,y);
+=======
+    /* ONE PERSON WRITE THIS */
+    PImage rockimg = loadImage("rock.png");
+    //image(rockimg, 0,0);
+    rockimg.resize(50, 50);
+    image(rockimg, x, y);
+    //fill(106,93,108);
+    //ellipse(x,y,50,40);
+>>>>>>> 07c04367bf9b7c04609b8a71f42199084abd5782
   }
 }
 
 public class LivingRock extends Rock implements Moveable {
   float t = 1.0001;// t is pseudo time
   LivingRock(float x, float y) {
-    super(x,y);
+    super(x, y);
   }
   void move() {
-    if (y < 780){
+    if (y < 780) {
       if ((y + 9.8 * t * t) > 780) y = 780;
       else y += 9.8 * t * t;
       t += 0.0001;
-    }
-    else x += random(-2,2);
+    } else x += random(-2, 2);
   }
 }
 
 class Ball extends Thing implements Moveable {
+  float[] colors = new float[3];
+
+  void setColors() {
+    for (int i = 0; i < colors.length; i++) {
+      colors[i] = random(255);
+    }
+  }
   float radius = random(25) + 25;
   float xspeed=15-radius/5;
   float yspeed=15-radius/5;
   Ball(float x, float y) {
 
     super(x, y);
+    setColors();
   }
 
   void display() {
     /* ONE PERSON WRITE THIS */
-    fill(255,0,0);
-    ellipse(x,y,radius,radius);
+    fill(colors[0], colors[1], colors[2]);
+    ellipse(x, y, radius, radius);
   }
 
   void move() {
@@ -90,14 +112,14 @@ void setup() {
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
   for (int i = 0; i < 10; i++) {
-    Ball b = new Ball(50+random(width-100),50+random(height)-100);
+    Ball b = new Ball(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(b);
     thingsToMove.add(b);
-    Rock r = new Rock(50+random(width-100),50+random(height)-100);
+    Rock r = new Rock(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(r);
   }
 
-  LivingRock m = new LivingRock(50+random(width-100),50+random(height)-100);
+  LivingRock m = new LivingRock(50+random(width-100), 50+random(height)-100);
   thingsToDisplay.add(m);
   thingsToMove.add(m);
 }
