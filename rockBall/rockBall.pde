@@ -14,18 +14,28 @@ abstract class Thing implements Displayable{
 }
 
 class Rock extends Thing{
+  PImage rockimg;
+  
   Rock(float x, float y) {
     super(x, y);
+    int num = (int)random(1);
+    if (num == 0) {
+      rockimg = loadImage("rock.png");
+      //image(rockimg, 0,0);
+        //fill(106,93,108);
+        //ellipse(x,y,50,40);
+      }
+      else {
+      rockimg = loadImage("rock_PNG.png");
+        //image(rockimg, 0,0);
+        
+      }
   }
 
   void display() { 
       /* ONE PERSON WRITE THIS */
-      PImage rockimg = loadImage("rock.png");
-      //image(rockimg, 0,0);
       rockimg.resize(50,50);
       image(rockimg, x,y);
-      //fill(106,93,108);
-      //ellipse(x,y,50,40);
   }
 }
 
