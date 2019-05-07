@@ -23,12 +23,12 @@ class Rock extends Thing{
   PImage rockimg;
   Rock(float x, float y) {
     super(x, y);
-    int num = (int)random(1);
+    int num = (int)random(2);
     if (num == 0) {
       rockimg = loadImage("rock.png");
     }
     else {
-      rockimg = loadImage("rock_PNG.png");
+      rockimg = loadImage("Rock-PNG.png");
     }
   }
 
@@ -48,7 +48,9 @@ public class LivingRock extends Rock implements Moveable {
       if ((y + 9.8 * t * t) > 780) y = 780;
       else y += 9.8 * t * t;
       t += 0.0001;
-    } else x += random(-2, 2);
+    } 
+    else if (y > 780) y = 780;
+    else x += random(-2, 2);
   }
 }
 
