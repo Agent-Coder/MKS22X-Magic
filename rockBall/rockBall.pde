@@ -20,10 +20,12 @@ class Rock extends Thing{
 
   void display() { 
       /* ONE PERSON WRITE THIS */
-      //PImage rockimg = loadImage("rock.png");
+      PImage rockimg = loadImage("rock.png");
       //image(rockimg, 0,0);
-      fill(106,93,108);
-      ellipse(x,y,50,40);
+      rockimg.resize(50,50);
+      image(rockimg, x,y);
+      //fill(106,93,108);
+      //ellipse(x,y,50,40);
   }
 }
 
