@@ -5,6 +5,11 @@ interface Displayable {
 interface Moveable {
   void move();
 }
+
+interface Collideable {
+  boolean isTouching(Thing other);
+}
+
 abstract class Thing implements Displayable {
   float x, y;
 
@@ -104,6 +109,7 @@ class Ball extends Thing implements Moveable {
 }
 ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
+ArrayList<Collideable> listOfCollideables;
 
 void setup() {
   size(1000, 800);
