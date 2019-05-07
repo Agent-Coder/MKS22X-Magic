@@ -30,21 +30,24 @@ class Rock extends Thing{
 }
 
 public class LivingRock extends Rock implements Moveable {
-  // t is pseudo time
+  float t = 1.0001;// t is pseudo time
   LivingRock(float x, float y) {
     super(x,y);
   }
   void move() {
-    if (y < 800){
-      if ((y + 9.8) > 800) y = 800;
-      else y += 9.8;
+    if (y < 780){
+      if ((y + 9.8 * t * t) > 780) y = 780;
+      else y += 9.8 * t * t;
+      t += 0.0001;
     }
-    x += random(-2,2);
+    else x += random(-2,2);
   }
 }
 
 class Ball extends Thing implements Moveable {
-  float radius = random(50);
+  float radius = random(25) + 25;
+  float xspeed=15-radius/5;
+  float yspeed=15-radius/5;
   Ball(float x, float y) {
 
     super(x, y);
@@ -52,12 +55,19 @@ class Ball extends Thing implements Moveable {
 
   void display() {
     /* ONE PERSON WRITE THIS */
-    fill(random(255), random(255), random(255));
+    fill(255,0,0);
     ellipse(x,y,radius,radius);
   }
 
   void move() {
-    /* ONE PERSON WRITE THIS */
+    x+=xspeed;
+    y+=yspeed;
+    if (x>=1000-radius||x<=radius) {
+      xspeed=-xspeed;
+    }
+    if (y>=800-radius||y<=radius ) {
+      yspeed=-yspeed;
+    }
   }
 }
 ArrayList<Displayable> thingsToDisplay;
