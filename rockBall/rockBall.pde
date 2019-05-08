@@ -40,17 +40,28 @@ class Rock extends Thing{
 
 public class LivingRock extends Rock implements Moveable {
   float t = 1.0001;// t is pseudo time
+  
   LivingRock(float x, float y) {
     super(x, y);
   }
+  
   void move() {
-    if (y < 780) {
-      if ((y + 9.8 * t * t) > 780) y = 780;
-      else y += 9.8 * t * t;
+    if (y < 760) {
+      y += 9.8 * t * t;
       t += 0.0001;
     } 
-    else if (y > 780) y = 780;
+    else if (y > 760) y = 760;
     else x += random(-2, 2);
+  }
+  
+  void display(){
+    super.display();
+    fill(255);
+    ellipse(x + 10, y + 10, 20, 20);
+    ellipse(x + 40, y + 10, 20, 20);
+    fill(0);
+    ellipse(x + 10,y + 10, 10, 10);
+    ellipse(x + 40,y + 10, 10, 10);
   }
 }
 
