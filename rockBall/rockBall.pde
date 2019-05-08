@@ -81,10 +81,10 @@ class Ball extends Thing implements Moveable {
     x+=xspeed;
     y+=yspeed;
     if (x>=1000-radius||x<=radius) {
-      xspeed=-xspeed*random(10);
+      xspeed=-xspeed;
     }
     if (y>=800-radius||y<=radius ) {
-      yspeed=-yspeed*random(10);
+      yspeed=-yspeed;
     }
   }
 }
