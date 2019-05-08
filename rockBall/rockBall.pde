@@ -40,18 +40,28 @@ class Rock extends Thing{
 
 public class LivingRock extends Rock implements Moveable {
   float t = 1.0001;// t is pseudo time
-  
+  int mode;
+  float xdir, ydir;
   LivingRock(float x, float y) {
     super(x, y);
+    mode = (int)random(3);
+    if (mode == 0) {
+      xdir = random(-5,5);
+    }
   }
   
   void move() {
-    if (y < 760) {
-      y += 9.8 * t * t;
-      t += 0.0001;
-    } 
-    else if (y > 760) y = 760;
-    else x += random(-2, 2);
+    if (mode == 0) { //drop and slide
+      if (y < 760) {
+        y += 9.8 * t * t;
+        t += 0.0001;
+      } 
+      else if (y > 760) y = 760;
+      else {
+        if (x + xdir <= 0 || x + xdir >= 950) xdir = -xdir;
+        x += xdir;
+      }
+    }
   }
   
   void display(){
