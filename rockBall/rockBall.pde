@@ -44,9 +44,13 @@ public class LivingRock extends Rock implements Moveable {
   float xdir, ydir;
   LivingRock(float x, float y) {
     super(x, y);
-    mode = (int)random(3);
+    mode = (int)random(2);
     if (mode == 0) {
       xdir = random(-5,5);
+    }
+    if (mode == 1) {
+      xdir = random(-5,5);
+      ydir = random(-5,5);
     }
   }
   
@@ -61,6 +65,16 @@ public class LivingRock extends Rock implements Moveable {
         if (x + xdir <= 0 || x + xdir >= 950) xdir = -xdir;
         x += xdir;
       }
+    }
+    if (mode == 1) {
+      while (x + xdir >= 950 || x  + xdir <= 0) {
+        xdir = random(-5,5);
+      }
+      while (y + ydir >= 760 || y  + ydir <= 0) {
+        ydir = random(-5,5);
+      }
+      x += xdir;
+      y += ydir;
     }
   }
   
