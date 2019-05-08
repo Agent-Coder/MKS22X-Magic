@@ -81,13 +81,33 @@ class Ball extends Thing implements Moveable {
     x+=xspeed;
     y+=yspeed;
     if (x>=1000-radius||x<=radius) {
+      xspeed=-xspeed*random(10);
+    }
+    if (y>=800-radius||y<=radius ) {
+      yspeed=-yspeed*random(10);
+    }
+  }
+}
+class CurvedBall extends Ball {
+  CurvedBall(float x, float y) {
+    super(x, y);
+    xspeed=millis()/1000.0;
+    yspeed=100*sin(radians(angle));
+  }
+  int angle=0;
+  void move() {
+    angle+=random(10);
+    x+=xspeed;
+    y=millis()/100.0+yspeed;
+    yspeed=100*sin(radians(angle));
+    if (x>=1000-radius||x<=radius) {
       xspeed=-xspeed;
     }
     if (y>=800-radius||y<=radius ) {
       yspeed=-yspeed;
     }
   }
-}
+} 
 ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
 ArrayList<Collideable> listOfCollideables;
