@@ -127,19 +127,38 @@ class CurvedBall extends Ball {
   CurvedBall(float x, float y) {
     super(x, y);
     xspeed=millis()/1000.0;
-    yspeed=100*sin(radians(angle));
+    yspeed=millis()/100.0+100*sin(radians(angle));
   }
   int angle=0;
+  int starty=0;
+  boolean up=false;
   void move() {
+    if (up) {
+      yspeed=height-millis()/100.0-100*sin(radians(angle));
+      starty=height;
+    } else {
+      yspeed=millis()/100.0+100*sin(radians(angle));
+      starty=0;
+    }
     angle+=random(10);
     x+=xspeed;
-    y=millis()/100.0+yspeed;
-    yspeed=100*sin(radians(angle));
-    if (x>=1000-radius||x<=radius) {
-      xspeed=-xspeed;
+    y=starty+yspeed;
+    if (x>=width-radius||x<=radius) {
+      if (x>=1000-radius) {
+        xspeed=-1*millis()/((random (radius)*1000.0));
+      } else if (x<=radius) {
+        xspeed=1*millis()/((random (radius)*1000.0));
+      }
     }
-    if (y>=800-radius||y<=radius ) {
-      yspeed=-yspeed;
+    if (y<100) {
+      y=abs(millis()/100.0+100*sin(radians(angle)));
+      up=false;
+    }
+    if (y>height-100) {
+      y=2*height-abs(millis()/100.0+100*sin(radians(angle)));
+      System.out.println(y);
+      up=true;
+      
     }
   }
 } 
