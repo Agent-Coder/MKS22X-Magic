@@ -39,6 +39,7 @@ class Rock extends Thing{
 }
 
 public class LivingRock extends Rock implements Moveable {
+  int t = 1; //sudo time
   int mode;
   float xdir, ydir;
   LivingRock(float x, float y) {
@@ -57,6 +58,7 @@ public class LivingRock extends Rock implements Moveable {
   void move() {
     if (mode == 0) { //drop and slide
       if (y < 760) {
+        if (ydir < 9.8) ydir = 9.8;
         y += ydir;
         ydir *= 1.0001;
       } 
@@ -88,6 +90,11 @@ public class LivingRock extends Rock implements Moveable {
       xdir *= 0.97;
       ydir *= 0.97;
     }
+    if (t >= 200) {
+      mode = (int)random(3);
+      t = -1;
+    }
+    t++;
   }
   
   void display(){

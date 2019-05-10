@@ -20,4 +20,5 @@ Michael and Amanda: Updated color changing for rocks, added collision and the co
 
 Amanda: Made a subclass of ball with a new way of moving, updated moving for rocks.
 
-David: Added eyes to rock class. Added two movement modes for living rock.
+David: Added eyes to rock class. Added two movement modes for living 
+rock. Added mode switching to lRock class.
