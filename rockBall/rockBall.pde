@@ -39,16 +39,16 @@ class Rock extends Thing{
 }
 
 public class LivingRock extends Rock implements Moveable {
-  float t = 1.0001;// t is pseudo time
   int mode;
   float xdir, ydir;
   LivingRock(float x, float y) {
     super(x, y);
-    mode = (int)random(2);
+    mode = (int)random(3);
     if (mode == 0) {
       xdir = random(-5,5);
+      ydir = 9.8;
     }
-    if (mode == 1) {
+    if (mode == 1 || mode == 2) {
       xdir = random(-5,5);
       ydir = random(-5,5);
     }
@@ -57,8 +57,8 @@ public class LivingRock extends Rock implements Moveable {
   void move() {
     if (mode == 0) { //drop and slide
       if (y < 760) {
-        y += 9.8 * t * t;
-        t += 0.0001;
+        y += ydir;
+        ydir *= 1.0001;
       } 
       else if (y > 760) y = 760;
       else {
@@ -66,7 +66,7 @@ public class LivingRock extends Rock implements Moveable {
         x += xdir;
       }
     }
-    if (mode == 1) {
+    if (mode == 1) { // bounce around the walls
       while (x + xdir >= 950 || x  + xdir <= 0) {
         xdir = random(-5,5);
       }
@@ -75,6 +75,18 @@ public class LivingRock extends Rock implements Moveable {
       }
       x += xdir;
       y += ydir;
+    }
+    if (mode == 2) { // slide and decay speed
+      if (abs(xdir) < 0.05) xdir = random(-5,5);
+      if (abs(ydir) < 0.05) ydir = random(-5,5);
+      x += xdir;
+      if (x < 0) x = 0;
+      else if (x > 760) x = 760;
+      y += ydir;
+      if (y < 0) y = 0;
+      else if (y > 760) y = 760;
+      xdir *= 0.97;
+      ydir *= 0.97;
     }
   }
   
