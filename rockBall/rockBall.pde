@@ -19,15 +19,14 @@ abstract class Thing implements Displayable {
   }
 }
 
-class Rock extends Thing{
+class Rock extends Thing {
   PImage rockimg;
   Rock(float x, float y) {
     super(x, y);
     int num = (int)random(2);
     if (num == 0) {
       rockimg = loadImage("rock.png");
-    }
-    else {
+    } else {
       rockimg = loadImage("Rock-PNG.png");
     }
   }
@@ -46,23 +45,22 @@ public class LivingRock extends Rock implements Moveable {
     super(x, y);
     mode = (int)random(3);
     if (mode == 0) {
-      xdir = random(-5,5);
+      xdir = random(-5, 5);
       ydir = 9.8;
     }
     if (mode == 1 || mode == 2) {
-      xdir = random(-5,5);
-      ydir = random(-5,5);
+      xdir = random(-5, 5);
+      ydir = random(-5, 5);
     }
   }
-  
+
   void move() {
     if (mode == 0) { //drop and slide
       if (y < 760) {
         if (ydir < 9.8) ydir = 9.8;
         y += ydir;
         ydir *= 1.0001;
-      } 
-      else if (y > 760) y = 760;
+      } else if (y > 760) y = 760;
       else {
         if (x + xdir <= 0 || x + xdir >= 950) xdir = -xdir;
         x += xdir;
@@ -70,17 +68,17 @@ public class LivingRock extends Rock implements Moveable {
     }
     if (mode == 1) { // bounce around the walls
       while (x + xdir >= 950 || x  + xdir <= 0) {
-        xdir = random(-5,5);
+        xdir = random(-5, 5);
       }
       while (y + ydir >= 760 || y  + ydir <= 0) {
-        ydir = random(-5,5);
+        ydir = random(-5, 5);
       }
       x += xdir;
       y += ydir;
     }
     if (mode == 2) { // slide and decay speed
-      if (abs(xdir) < 0.05) xdir = random(-5,5);
-      if (abs(ydir) < 0.05) ydir = random(-5,5);
+      if (abs(xdir) < 0.05) xdir = random(-5, 5);
+      if (abs(ydir) < 0.05) ydir = random(-5, 5);
       x += xdir;
       if (x < 0) x = 0;
       else if (x > 760) x = 760;
@@ -96,15 +94,15 @@ public class LivingRock extends Rock implements Moveable {
     }
     t++;
   }
-  
-  void display(){
+
+  void display() {
     super.display();
     fill(255);
     ellipse(x + 10, y + 10, 20, 20);
     ellipse(x + 40, y + 10, 20, 20);
     fill(0);
-    ellipse(x + 10,y + 10, 10, 10);
-    ellipse(x + 40,y + 10, 10, 10);
+    ellipse(x + 10, y + 10, 10, 10);
+    ellipse(x + 40, y + 10, 10, 10);
   }
 }
 
@@ -146,40 +144,39 @@ class CurvedBall extends Ball {
   CurvedBall(float x, float y) {
     super(x, y);
     xspeed=millis()/1000.0;
-    yspeed=millis()/100.0+100*sin(radians(angle));
+    yspeed=random(radius%15)*sin(radians(angle));
   }
+  boolean first=true;
   int angle=0;
-  int starty=0;
+  float time;
   boolean up=false;
   void move() {
     if (up) {
-      yspeed=height-millis()/100.0-100*sin(radians(angle));
-      starty=height;
+      yspeed=-1*millis()%10+100*sin(radians(angle));
     } else {
-      yspeed=millis()/100.0+100*sin(radians(angle));
-      starty=0;
+      yspeed=(millis()%10+100*sin(radians(angle)));
     }
     angle+=random(10);
     x+=xspeed;
-    y=starty+yspeed;
+    y+=yspeed/10;
     if (x>=width-radius||x<=radius) {
       if (x>=1000-radius) {
-        xspeed=-1*millis()/((random (radius)*1000.0));
+        xspeed=-1*millis()/(((random (radius)+5)*500.0));
       } else if (x<=radius) {
-        xspeed=1*millis()/((random (radius)*1000.0));
+        xspeed=1*millis()/(((random (radius)+5)*500.0));
       }
     }
-    if (y<100) {
-      y=abs(millis()/100.0+100*sin(radians(angle)));
+    if (y<0) {
+      yspeed=abs(millis()%10+100*sin(radians(angle)));
+      y+=yspeed;
       up=false;
-    }
-    if (y>height-100) {
-      y=2*height-abs(millis()/100.0+100*sin(radians(angle)));
-      System.out.println(y);
-      up=true;
-      
-    }
   }
+  if (y>height) {
+    yspeed=-1*abs(millis()%10+100*sin(radians(angle)));
+    y+=yspeed;
+    up=true;
+  }
+}
 } 
 ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
@@ -191,7 +188,7 @@ void setup() {
 
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
-  for (int i = 0; i < 10; i++) {
+  for (int i = 1; i < 10; i++) {
     Ball b = new Ball(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(b);
     thingsToMove.add(b);
