@@ -7,6 +7,8 @@ interface Moveable {
 }
 
 interface Collideable {
+  float xspeed=0;
+  float yspeed=0;
   boolean isTouching(Thing other);
   String identify();
 }
@@ -53,6 +55,20 @@ class Rock extends Thing implements Collideable {
     float disty=this.y-other.y;
     float dist=sqrt(pow(distx, 2)+pow(disty, 2));
     if (dist<this.radius+other.radius) {  
+      if (x>other.x) {
+        x+=-distx/2;
+        other.x+=distx/2;
+      } else {
+        other.x+=-distx/2;
+        x+=distx/2;
+      }
+      if (y>other.y) {
+        y+=-disty/2;
+        other.y+=disty/2;
+      } else {
+        other.y+=-disty/2;
+        y+=disty/2;
+      }
       return true;
     }
     return false;
@@ -120,7 +136,7 @@ public class LivingRock extends Rock implements Moveable, Collideable {
     return "LivingRock";
   }
 
- boolean isTouching(Thing other) {
+  boolean isTouching(Thing other) {
     float distx=this.x-other.x;
     float disty=this.y-other.y;
     float dist=sqrt(pow(distx, 2)+pow(disty, 2));
@@ -141,6 +157,9 @@ public class LivingRock extends Rock implements Moveable, Collideable {
 }
 
 class Ball extends Thing implements Moveable, Collideable {
+  float radius = random(25) + 25;
+  float xspeed=15-radius/5;
+  float yspeed=15-radius/5;
   void setColors() {
     for (int i = 0; i < colors.length; i++) {
       colors[i] = random(255);
@@ -163,9 +182,7 @@ class Ball extends Thing implements Moveable, Collideable {
     colors[1] = blue;
     colors[2] = green;
   }
-  float radius = random(25) + 25;
-  float xspeed=15-radius/5;
-  float yspeed=15-radius/5;
+
   Ball(float x, float y) {
 
     super(x, y);
@@ -206,51 +223,66 @@ class CurvedBall extends Ball {
       yspeed=(millis()%10+100*sin(radians(angle)));
     }
   }
-  String identify() {
-    return "CurvedBall";
-  }
+  boolean bumped=false;
   void move() {
+    angle+=random(10);
+    x+=xspeed;
+    y+=yspeed/10;
+    setColors(r, b, g);
     if (up) {
       yspeed=-1*millis()%10+100*sin(radians(angle));
     } else {
       yspeed=(millis()%10+100*sin(radians(angle)));
     }
-    angle+=random(10);
-    x+=xspeed;
-    y+=yspeed/10;
     System.out.println(xspeed);
     if (x>=width-radius||x<=radius) {
-      if (x>=1000-radius) {
+      if (x>=width-radius) {
+        x=width-radius;
         xspeed=(-1*millis()/(((random (radius)+5)*500.0)))%15;
-      } else if (x<=radius) {
+      } else {
+        x=radius;
         xspeed=(millis()/(((random (radius)+5)*500.0)))%15;
       }
     }
-    if (y<0) {
+    if (y<radius) {
+      y=radius;
       yspeed=abs(millis()%10+100*sin(radians(angle)));
       y+=yspeed;
       up=false;
     }
-    if (y>height) {
+    if (y>height-radius) {
+      y=height-radius;
       yspeed=-1*abs(millis()%10+100*sin(radians(angle)));
       y+=yspeed;
       up=true;
     }
     for ( Collideable c : listOfCollideables) {
-      r=colors[0];
-      b=colors[1];
-      g=colors[2];
-      if (isTouching((Thing)c)&&c!=this&&c.identify().equals("Rock")) {
-        colors[0]=255;
-        colors[1]=40;
-        colors[2]=40;
-      } else {
-        colors[0]=r;
-        colors[1]=b;
-        colors[2]=g;
-        setColors(r, b, g);
-        fill(colors[0], colors[1], colors[2]);
+      if (isTouching((Thing)c)&&c!=this) {
+        up=!up;
+        if (bumped) {
+          yspeed=-c.yspeed;
+          xspeed=-c.xspeed;
+        } else {
+          if (yspeed>0) {
+            y+=-1*abs(millis()%10+100*sin(radians(angle)));
+          } else {
+            y+=abs(millis()%10+100*sin(radians(angle)));
+          }
+          if (xspeed>0) {
+            x+=(-1*millis()/(((random (radius)+5)*500.0)))%15;
+          } else {
+            x+=(millis()/(((random (radius)+5)*500.0)))%15;
+          }
+        }
+        bumped=true;
+        if (c.identify().equals("Rock")) {
+          setColors(255, 0, 0);
+        }
+        if (c.identify().equals("Ball")) {
+          setColors(colors[0]+100, colors[1]+100, colors[2]+100);
+        }
       }
+      bumped=false;
     }
   }
 }
@@ -261,23 +293,58 @@ class StraightBall extends Ball {
     setColors();
   }
 
-  String identify() {
-    return "StraightBall";
-  }
   void display() {
     /* ONE PERSON WRITE THIS */
     fill(colors[0], colors[1], colors[2]);
     ellipse(x, y, radius, radius);
   }
-
+  boolean bumped=false;
   void move() {
+    setColors(r, g, b);
     x+=xspeed;
     y+=yspeed;
-    if (x>=1000-radius||x<=radius) {
+    if (x>=width-radius||x<=radius) {
+      if (x>=width-radius) {
+        x=width-radius;
+      } else {
+        x=radius;
+      }
       xspeed=-xspeed;
     }
-    if (y>=800-radius||y<=radius ) {
+    if (y>=height-radius||y<=radius) {
+      if (y>=height-radius) {
+        y=height-radius;
+      } else {
+        y=radius;
+      }
       yspeed=-yspeed;
+    }
+    for ( Collideable c : listOfCollideables) {
+      if (isTouching((Thing)c)&&c!=this) {
+        if (bumped) {
+          yspeed=c.yspeed;
+          xspeed=c.xspeed;
+        } else {
+          if (yspeed<0) {
+            yspeed=15-radius/5;
+          } else {
+            yspeed=-(15-radius/5);
+          }
+          if (xspeed<0) {
+            xspeed=15-radius/5;
+          } else {
+            xspeed=-(15-radius/5);
+          }
+        }
+        bumped=true;
+        if (c.identify().equals("Rock")) {
+          setColors(255, 0, 0);
+        }
+        if (c.identify().equals("Ball")) {
+          setColors(colors[0]-100, colors[1]-100, colors[2]-100);
+        }
+      }
+      bumped=false;
     }
   }
 }
@@ -291,20 +358,25 @@ void setup() {
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
   listOfCollideables = new ArrayList<Collideable>();
+  for (int i = 0; i < 5; i++) {
+    StraightBall d = new StraightBall(50+random(width-100), 50+random(height)-100);
+    thingsToDisplay.add(d);
+    thingsToMove.add(d);
+    listOfCollideables.add(d);
+  }
   for (int i = 0; i < 10; i++) {
     CurvedBall b = new CurvedBall(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(b);
+    listOfCollideables.add(b);
     thingsToMove.add(b);
     Rock r = new Rock(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(r);
-    listOfCollideables.add(b);
     listOfCollideables.add(r);
+    LivingRock m = new LivingRock(50+random(width-100), 50+random(height)-100);
+    thingsToDisplay.add(m);
+    thingsToMove.add(m);
+    listOfCollideables.add(m);
   }
-
-  LivingRock m = new LivingRock(50+random(width-100), 50+random(height)-100);
-  thingsToDisplay.add(m);
-  thingsToMove.add(m);
-  //listOfCollideables.add(m);
 }
 
 void draw() {
