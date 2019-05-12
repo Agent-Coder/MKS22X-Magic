@@ -8,19 +8,29 @@ interface Moveable {
 
 interface Collideable {
   boolean isTouching(Thing other);
+  String identify();
 }
 
 abstract class Thing implements Displayable {
   float x, y;
+  float[] colors = new float[3];
+  float r;
+  float b;
+  float g;
 
+  int radius=25;
   Thing(float x, float y) {
     this.x = x;
     this.y = y;
   }
+  String identify() {
+    return "Thing";
+  }
 }
 
-class Rock extends Thing {
+class Rock extends Thing implements Collideable {
   PImage rockimg;
+  int radius=25;
   Rock(float x, float y) {
     super(x, y);
     int num = (int)random(2);
@@ -35,9 +45,21 @@ class Rock extends Thing {
     rockimg.resize(50, 50);
     image(rockimg, x, y);
   }
+  String identify() {
+    return "Rock";
+  }
+  boolean isTouching(Thing other) {
+    float distx=this.x-other.x;
+    float disty=this.y-other.y;
+    float dist=sqrt(pow(distx, 2)+pow(disty, 2));
+    if (dist<this.radius+other.radius) {  
+      return true;
+    }
+    return false;
+  }
 }
 
-public class LivingRock extends Rock implements Moveable {
+public class LivingRock extends Rock implements Moveable, Collideable {
   int t = 1; //sudo time
   int mode;
   float xdir, ydir;
@@ -94,7 +116,19 @@ public class LivingRock extends Rock implements Moveable {
     }
     t++;
   }
+  String identify() {
+    return "LivingRock";
+  }
 
+ boolean isTouching(Thing other) {
+    float distx=this.x-other.x;
+    float disty=this.y-other.y;
+    float dist=sqrt(pow(distx, 2)+pow(disty, 2));
+    if (dist<this.radius+other.radius) {  
+      return true;
+    }
+    return false;
+  }
   void display() {
     super.display();
     fill(255);
@@ -106,13 +140,28 @@ public class LivingRock extends Rock implements Moveable {
   }
 }
 
-class Ball extends Thing implements Moveable {
-  float[] colors = new float[3];
-
+class Ball extends Thing implements Moveable, Collideable {
   void setColors() {
     for (int i = 0; i < colors.length; i++) {
       colors[i] = random(255);
+      if (i==0) {
+        r=colors[0];
+      }
+      if (i==1) {
+        b=colors[1];
+      }
+      if (i==0) {
+        g=colors[2];
+      }
     }
+  }
+  String identify() {
+    return "Ball";
+  }
+  void setColors(float red, float blue, float green) {
+    colors[0] = red;
+    colors[1] = blue;
+    colors[2] = green;
   }
   float radius = random(25) + 25;
   float xspeed=15-radius/5;
@@ -123,6 +172,98 @@ class Ball extends Thing implements Moveable {
     setColors();
   }
 
+  void display() {
+    /* ONE PERSON WRITE THIS */
+    fill(colors[0], colors[1], colors[2]);
+    ellipse(x, y, radius, radius);
+  }
+  boolean isTouching(Thing other) {
+    float distx=this.x-other.x;
+    float disty=this.y-other.y;
+    float dist=sqrt(pow(distx, 2)+pow(disty, 2));
+    if (dist<this.radius+other.radius) {  
+      return true;
+    }
+    return false;
+  }
+  void move() {
+    x=random(width);
+    y=random(height);
+  }
+}
+class CurvedBall extends Ball {
+  boolean first=true;
+  int angle=0;
+  float time;
+  boolean up=false;
+  CurvedBall(float x, float y) {
+    super(x, y);
+    if (random(2)==0) {
+      xspeed=(millis()/(((random (radius)+5)*500.0)))%15;
+      yspeed=-1*millis()%10+100*sin(radians(angle));
+    } else {
+      xspeed=(-1*millis()/(((random (radius)+5)*500.0)))%15;
+      yspeed=(millis()%10+100*sin(radians(angle)));
+    }
+  }
+  String identify() {
+    return "CurvedBall";
+  }
+  void move() {
+    if (up) {
+      yspeed=-1*millis()%10+100*sin(radians(angle));
+    } else {
+      yspeed=(millis()%10+100*sin(radians(angle)));
+    }
+    angle+=random(10);
+    x+=xspeed;
+    y+=yspeed/10;
+    System.out.println(xspeed);
+    if (x>=width-radius||x<=radius) {
+      if (x>=1000-radius) {
+        xspeed=(-1*millis()/(((random (radius)+5)*500.0)))%15;
+      } else if (x<=radius) {
+        xspeed=(millis()/(((random (radius)+5)*500.0)))%15;
+      }
+    }
+    if (y<0) {
+      yspeed=abs(millis()%10+100*sin(radians(angle)));
+      y+=yspeed;
+      up=false;
+    }
+    if (y>height) {
+      yspeed=-1*abs(millis()%10+100*sin(radians(angle)));
+      y+=yspeed;
+      up=true;
+    }
+    for ( Collideable c : listOfCollideables) {
+      r=colors[0];
+      b=colors[1];
+      g=colors[2];
+      if (isTouching((Thing)c)&&c!=this&&c.identify().equals("Rock")) {
+        colors[0]=255;
+        colors[1]=40;
+        colors[2]=40;
+      } else {
+        colors[0]=r;
+        colors[1]=b;
+        colors[2]=g;
+        setColors(r, b, g);
+        fill(colors[0], colors[1], colors[2]);
+      }
+    }
+  }
+}
+class StraightBall extends Ball {
+  StraightBall(float x, float y) {
+
+    super(x, y);
+    setColors();
+  }
+
+  String identify() {
+    return "StraightBall";
+  }
   void display() {
     /* ONE PERSON WRITE THIS */
     fill(colors[0], colors[1], colors[2]);
@@ -140,65 +281,30 @@ class Ball extends Thing implements Moveable {
     }
   }
 }
-class CurvedBall extends Ball {
-  CurvedBall(float x, float y) {
-    super(x, y);
-    xspeed=millis()/1000.0;
-    yspeed=random(radius%15)*sin(radians(angle));
-  }
-  boolean first=true;
-  int angle=0;
-  float time;
-  boolean up=false;
-  void move() {
-    if (up) {
-      yspeed=-1*millis()%10+100*sin(radians(angle));
-    } else {
-      yspeed=(millis()%10+100*sin(radians(angle)));
-    }
-    angle+=random(10);
-    x+=xspeed;
-    y+=yspeed/10;
-    if (x>=width-radius||x<=radius) {
-      if (x>=1000-radius) {
-        xspeed=-1*millis()/(((random (radius)+5)*500.0));
-      } else if (x<=radius) {
-        xspeed=1*millis()/(((random (radius)+5)*500.0));
-      }
-    }
-    if (y<0) {
-      yspeed=abs(millis()%10+100*sin(radians(angle)));
-      y+=yspeed;
-      up=false;
-  }
-  if (y>height) {
-    yspeed=-1*abs(millis()%10+100*sin(radians(angle)));
-    y+=yspeed;
-    up=true;
-  }
-}
-} 
 ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
 ArrayList<Collideable> listOfCollideables;
-
 void setup() {
   size(1000, 800);
   //PImage rockimg = loadImage("rock.png");
 
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
-  for (int i = 1; i < 10; i++) {
-    Ball b = new Ball(50+random(width-100), 50+random(height)-100);
+  listOfCollideables = new ArrayList<Collideable>();
+  for (int i = 0; i < 10; i++) {
+    CurvedBall b = new CurvedBall(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(b);
     thingsToMove.add(b);
     Rock r = new Rock(50+random(width-100), 50+random(height)-100);
     thingsToDisplay.add(r);
+    listOfCollideables.add(b);
+    listOfCollideables.add(r);
   }
 
   LivingRock m = new LivingRock(50+random(width-100), 50+random(height)-100);
   thingsToDisplay.add(m);
   thingsToMove.add(m);
+  //listOfCollideables.add(m);
 }
 
 void draw() {
