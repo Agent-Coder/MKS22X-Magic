@@ -132,9 +132,6 @@ public class LivingRock extends Rock implements Moveable, Collideable {
     }
     t++;
   }
-  String identify() {
-    return "LivingRock";
-  }
 
   boolean isTouching(Thing other) {
     float distx=this.x-other.x;
